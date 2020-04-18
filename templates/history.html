@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="row"> 
+  <legend style="color: white;font-size: 1.5rem;" class="border-bottom mb-4">History of Activities</legend>
+    {% for notification in notifications.items %}
+      {% if notification.owner.usertype =="Consumer" %}
+        {% if notification.status=="Accepted" %}
+        <a><li style="border-color: white; border-width:3px; color: white; border-radius: 10px; background-color: #001931; width: 45rem;margin-bottom: 1rem;padding-bottom : .3rem;padding-top : .3rem;"   
+          onMouseOver="this.style.borderColor='green'" onMouseOut="this.style.borderColor='white'"  class="list-group-item list-group-item-dark">
+        {%else%}
+        <a><li style="border-color: white; border-width:3px; color: white; border-radius: 10px; background-color: #001931; width: 45rem;margin-bottom: 1rem;padding-bottom : .3rem;padding-top : .3rem;"   
+          onMouseOver="this.style.borderColor='red'" onMouseOut="this.style.borderColor='white'"  class="list-group-item list-group-item-dark">
+        {%endif%}
+          {{notification.owner.username}}'s Request for Food has been {{notification.status}} by {{notification.PartnerName}}</li></a>
+
+
+      {% else %}
+        {% if notification.status=="Accepted" %}
+        <a><li style="border-color: white; border-width:3px; color: white; border-radius: 10px; background-color: #001931; width: 45rem;margin-bottom: 1rem;padding-bottom : .3rem;padding-top : .3rem;"   
+          onMouseOver="this.style.borderColor='green'" onMouseOut="this.style.borderColor='white'"  class="list-group-item list-group-item-dark">
+        {%else%}
+        <a><li style="border-color: white; border-width:3px; color: white; border-radius: 10px; background-color: #001931; width: 45rem;margin-bottom: 1rem;padding-bottom : .3rem;padding-top : .3rem;"   
+          onMouseOver="this.style.borderColor='red'" onMouseOut="this.style.borderColor='white'"  class="list-group-item list-group-item-dark">
+        {%endif%}
+          {{notification.owner.username}}'s Offer for Donating Food has been {{notification.status}} by {{notification.PartnerName}}</li></a>
+      {% endif %}
+    {% endfor %}
+</div>
+
+
+    {%for page_num in notifications.iter_pages(left_edge=1,right_edge=1,left_current=1,right_current=2) %}
+      {%if page_num%}
+        {%if notifications.page==page_num%}
+          <a class="btn btn-info mb-4" href="{{url_for('history',page=page_num)}}">{{page_num}}</a>
+        {%else%}
+          <a class="btn btn-outline-info mb-4" href="{{url_for('history',page=page_num)}}">{{page_num}}</a>
+        {%endif%}
+      {%else%}
+      {%endif%}
+    {%endfor%}
+
+{% endblock content %}

@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="row">  
+  <div class="col-md-6">
+  <div class="media content-section">
+    <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+    <div class="media-body">
+      <div class="article-metadata">
+        <a class="mr-2" href="{{url_for('profile',profile_id=post.author.id)}}">{{ post.author.username }}</a>
+        <small class="text-muted">{{ post.date_posted.strftime('%A,  %d %b %Y') }}</small>
+        {% if post.author == current_user %}
+          <div>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('update_post', post_id=post.id) }}">Update</a>
+            <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+          </div>
+        {% endif %}
+      </div>
+      {% if post.author.usertype=="Vendor" %}
+              <div class="row">
+                <div class="col-sm-8">
+                  <b><a class="article-title1">Available Food :</a></b>
+                </div>
+                <div class="col-sm-4">
+                  <b><a class="article-title1" >Max. People:</a></b>
+                </div>
+              </div>
+      {% else %}
+        <div class="row">
+                <div class="col-sm-4">  
+                  <b><a class="article-title1" >Min. People :</a></b>              
+                </div>
+                <div class="col-sm-8">
+                  <b><a class="article-title1" href="{{ url_for('post', post_id=post.id) }}">Preferred Food :</a></b>
+                </div>
+              </div>
+      {% endif %}
+            <p class="article-content list-group"> 
+              {% if post.author.usertype=="Vendor" %}
+                <div class="row">
+                  <div class="col-sm-8">
+                    <li style="border-radius: 10px " class="list-group-item list-group-item-light">{{ post.food }}</li>
+                  </div>
+                  <div class="col-sm-4">
+                    <li style="border-radius: 10px " class="list-group-item list-group-item-light">{{ post.people }}</li>
+                  </div>
+                </div>
+              {%else%}
+                <div class="row">
+                  <div class="col-sm-4">
+                    <li style="border-radius: 10px " class="list-group-item list-group-item-light">{{ post.people }}</li>
+                  </div>
+                  <div class="col-sm-8">
+                    <li style="border-radius: 10px " class="list-group-item list-group-item-light">{{ post.food }}</li>
+                  </div>
+                </div>
+              {%endif%}
+            </p>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Delete Post?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Delete">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+{% endblock content %}

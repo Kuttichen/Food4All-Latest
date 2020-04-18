@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="row">
+  <legend style="color: white;font-size: 2rem;" class="border-bottom mb-4">Ranking</legend>
+    <div class="col-md-4">
+    <legend style="color: white;font-size: 1.7rem;" class="border-bottom mb-4">Vendor</legend>
+
+  <ol><font face="JULIUS SANS ONE" color="silver" size="6">
+    {% for user in users.items %}
+      {% if user.usertype == "Vendor" %}
+        <li >{{user.username}}</li>
+      {% endif %}
+    {%endfor%}
+  </ol></font>
+
+    </div>
+    <div class="col-md-3">
+    <legend style="color: white;font-size: 1.7rem;" class="border-bottom mb-4">Donations</legend>
+      <ul style ="list-style-type:none;" ><font face="JULIUS SANS ONE" color="silver" size="6">
+    {% for user in users.items %}
+      {% if user.usertype == "Vendor" %}
+        <li >{{user.donation}}</li>
+      {% endif %}
+    {%endfor%}
+      </ul></font>
+    </div>
+</div>
+{% endblock content %}

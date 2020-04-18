@@ -1,0 +1,162 @@
+{% extends "layout.html" %}
+{% block content %}
+
+{% if current_user.key_flag==True %}
+<div class="row">  
+<font size='5.8' face="JULIUS SANS ONE" style="color: #28cd78;">SECRET KEY sent by &nbsp; </font></u> 
+<u><font size='5.8' face="JULIUS SANS ONE" style="color: #28cd78;">{{current_user.KeyThannaAal}} </font></u>
+<font size='5.8' face="JULIUS SANS ONE" style="color: #28cd78;">&nbsp;is : &nbsp;&nbsp;</font>
+<a><li style="border-color: white; border-width:3px; color:#001931 ; border-radius: 10px; background-color: #001931; width:4rem;margin-bottom: 1rem;padding-bottom : .3rem;padding-top : .3rem;padding-right: .3rem"   
+          onMouseOver="this.style.color='green'" onMouseOut="this.style.color='#001931'"  class="list-group-item list-group-item-dark">{{current_user.key}}&nbsp;&nbsp;</a></li>
+</div>
+{%endif%}
+
+
+
+
+
+
+<div class="row">  
+	<legend style="color: white;font-size: 2rem" class="border-bottom mb-4">Notifications</legend>
+  <div class="col-md-6">
+  <legend style="color: white;font-size: 1.5rem" class="border-bottom mb-4">Your Posts & Requests</legend>
+  {% for post in posts.items %}
+    {% if post.user_id==current_user.id %}
+	<div class="media content-section">
+    	<img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+    	<div class="media-body">
+      		<div class="article-metadata">
+        		<b><a style="font-size: 1.5rem" class="mr-2" href="#">{{ post.author.username }}</a><br></b>
+        		<small class="text-muted">{{ post.date_posted.strftime('%A,  %d %b %Y') }}</small>
+      		</div>
+
+            {% if post.author.usertype=="Vendor" %}
+              <div class="row">
+                <div class="col-sm-8">
+                  <b><a class="article-title1">Available Food :</a></b>
+                </div>
+                <div class="col-sm-4">
+                  <b><a class="article-title1" >Max. People:</a></b>
+                </div>
+              </div>
+      		{% else %}
+       		 <div class="row">
+                <div class="col-sm-4">  
+                  <b><a class="article-title1" >Min. People :</a></b>              
+                </div>
+                <div class="col-sm-8">
+                  <b><a class="article-title1" href="{{ url_for('post', post_id=post.id) }}">Preferred Food :</a></b>
+                </div>
+              </div>
+      		{% endif %}
+      		
+            <p class="article-content list-group"> 
+              {% if post.author.usertype=="Vendor" %}
+                <div class="row">
+                  <div class="col-sm-8">
+                    <li style="border-radius: 10px;background-color: #001931;color: white " class="list-group-item list-group-item-light">{{ post.food }}</li>
+                  </div>
+                  <div class="col-sm-4">
+                    <li style="border-radius: 10px;background-color: #001931;color: white " class="list-group-item list-group-item-light">{{post.people}}</li>
+                  </div>
+                </div>
+              {%else%}
+                <div class="row">
+                  <div class="col-sm-4">
+                    <li style="border-radius: 10px;background-color: #001931;color: white " class="list-group-item list-group-item-light">{{post.people}}</li>
+                  </div>
+                  <div class="col-sm-8">
+                    <li style="border-radius: 10px ;background-color: #001931;color: white" class="list-group-item list-group-item-light">{{ post.food }}</li>
+                  </div>
+                </div>
+              {%endif%}
+            </p>
+
+    		<div style="background-color: #001931;" class="media content-section">
+    	    <b><a style="color: white" class="article-title" >MATCH REQUEST :</a></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    
+            <a class="article-content list-group"> 
+            	{% if post.matchrequest==True %}
+                <a href="{{url_for('profile', profile_id=post.requestpartnerid)}}"><button class="btn btn-light" type="button" >{{ post.requestpartner }}</button></a>
+            	{% endif %}
+            </a>
+     		</div>
+
+    		{% if post.matchrequest==True %}
+    			<a class="media-content-section">
+    			<b>Do you wish to confirm match request?</b>
+    			</a>
+    			<div>
+    				{% if post.findrequest_flag == False %}
+      					<a href="{{url_for('confirm_requests',post_id=post.id,partner_id=current_user.RequestThannaAldeID)}}"><button class="btn btn-success" type="button" >Confirm</button></a>
+      				{% else %}
+       					<a href="{{url_for('confirm_findrequests',post_id=post.id,partner_id=current_user.RequestThannaAldeID,findpost_id=post.findrequestpostid)}}"><button class="btn btn-success" type="button" >Confirm</button></a>
+       				{% endif %}
+      				<a href="{{url_for('decline_requests',post_id=post.id,partner_id=current_user.RequestThannaAldeID)}}"><button class="btn btn-danger" type="button">Decline</button></a>  				
+    			</div>
+    		{%else%}
+      			<div class="media-content-section">
+    				<b>You have No Match Requests for this post yet !</b><br>
+      			</div>
+    		{%endif%}
+   		</div>
+    </div>
+    {% endif %}
+  {% endfor %}
+  </div>
+
+<div class="col-md-6">
+ <legend style="color: white;font-size: 1.5rem" class="border-bottom mb-4">Activities</legend>
+ {% for notification in notifications.items %}
+  {% if notification.owner.id==current_user.id %}
+  	{% if notification.new_flag==True %}
+  		{% if current_user.usertype=="Consumer" %}
+  			{% if notification.status=="Rejected" %}
+  				<a><li style="border-color: red;border-width:3px; color: red; border-radius: 10px; background-color: #001931; width: 33rem;margin-bottom: 1.25rem;padding-bottom : .45rem;padding-top : .45rem; font-weight: bold;" class="list-group-item list-group-item-dark"
+          		 >{{notification.PartnerName}} {{notification.status}} your Request for Food  </li></a>
+          	{% else %} 
+          		<a><li style="border-color: green;border-width:3px; color: green; border-radius: 10px; background-color: #001931; width: 33rem;margin-bottom: 1.25rem;padding-bottom : .45rem;padding-top : .45rem; font-weight: bold;"  class="list-group-item list-group-item-dark"
+          		 >{{notification.PartnerName}} {{notification.status}} your Request for Food &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </a>
+          		           {% if notification.generatekey_flag==True %}
+          		<a href="{{url_for('generatekey',not_id=notification.id,partner_id=notification.PartnerId)}}"><button class="btn btn-primary" type="button" >GENERATE KEY</button></a>
+          		           {%endif%}</li>
+          	{% endif %}
+        {% else %}
+        	{% if notification.status=="Rejected" %}
+  				<a><li style="border-color: red;border-width:3px; color: red; border-radius: 10px; background-color: #001931; width: 33rem;margin-bottom: 1.25rem;padding-bottom : .45rem;padding-top : .45rem; font-weight: bold;" class="list-group-item list-group-item-dark"
+          		>{{notification.PartnerName}} {{notification.status}} your Offer for Donating Food</li></a>
+          	{% else %}
+          		<a><li style="border-color: green;border-width:3px; color: green; border-radius: 10px; background-color: #001931; width: 33rem;margin-bottom: 1.25rem;padding-bottom : .45rem;padding-top : .45rem;font-weight: bold;" class="list-group-item list-group-item-dark"
+          		>{{notification.PartnerName}} {{notification.status}} your Offer for Donating Food &nbsp;</a>
+          					{% if notification.generatekey_flag==True %}
+          		<a href="{{url_for('generatekey',not_id=notification.id,partner_id=notification.PartnerId)}}"><button class="btn btn-primary" type="button" >GENERATE KEY</button></a>
+          					{%endif%}</li>
+            {% endif %}
+        {% endif %}
+
+    {% else %}
+    	{% if current_user.usertype=="Consumer" %}
+    	  {% if notification.status=="Accepted" %}
+    		<a><li style="border-color: white;border-width:3px; color: white; border-radius: 10px; background-color: #001931; width: 33rem;margin-bottom: 1.25rem;padding-bottom : .45rem;padding-top : .45rem;" onMouseOver="this.style.borderColor='green',this.style.color='green'" onMouseOut="this.style.borderColor='white',this.style.color='white'" class="list-group-item list-group-item-dark"
+    		>{{notification.PartnerName}} {{notification.status}} your Request for Food  </li></a>
+    	  {% else %}
+    	    <a><li style="border-color: white;border-width:3px; color: white; border-radius: 10px; background-color: #001931; width: 33rem;margin-bottom: 1.25rem;padding-bottom : .45rem;padding-top : .45rem;" onMouseOver="this.style.borderColor='red',this.style.color='red'" onMouseOut="this.style.borderColor='white',this.style.color='white'" class="list-group-item list-group-item-dark"
+    		>{{notification.PartnerName}} {{notification.status}} your Request for Food  </li></a>
+    	  {%endif%}
+    	{% else %}
+    	  {% if notification.status=="Accepted" %}
+    		<a><li style="border-color: white;border-width:3px; color: white; border-radius: 10px; background-color: #001931; width: 33rem;margin-bottom: 1.25rem;padding-bottom : .45rem;padding-top : .45rem;" onMouseOver="this.style.borderColor='green',this.style.color='green'" onMouseOut="this.style.borderColor='white',this.style.color='white'" class="list-group-item list-group-item-dark"
+    		>{{notification.PartnerName}} {{notification.status}} your Offer for Donating Food</li></a>
+    	  {% else %}
+    	    <a><li style="border-color: white;border-width:3px; color: white; border-radius: 10px; background-color: #001931; width: 33rem;margin-bottom: 1.25rem;padding-bottom : .45rem;padding-top : .45rem;" onMouseOver="this.style.borderColor='red',this.style.color='red'" onMouseOut="this.style.borderColor='white',this.style.color='white'" class="list-group-item list-group-item-dark"
+    		>{{notification.PartnerName}} {{notification.status}} your Offer for Donating Food</li></a>
+    	  {%endif%}
+    	{% endif %}
+    {%endif%}
+  {%endif%}
+ {%endfor%}
+</div>
+
+
+ </div>
+ <hr>
+{% endblock content %}

@@ -1,0 +1,116 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="row">  
+  <div class="col-md-3">
+  </div>
+
+{% if current_user.usertype=="Vendor" %}
+  <div class="col-md-6">
+   <div class="content-section">
+        <form method="POST" action="">
+            {{ form1.hidden_tag() }}
+            <fieldset class="form-group">
+            	
+                <legend class="border-bottom mb-4">Create Post</legend>
+                <div class="form-group">
+                    {{ form1.food.label(class="form-control-label") }}
+                    {{ form1.food(list="fooditem") }}
+                    <datalist id="fooditem">    
+                      <option value="Meals"></option>  
+                      <option value="Biriyani"></option>
+                      <option value="Fried Rice"></option> 
+                      <option value="Noodles"></option> 
+                      <option value="Chappathi & Curry"></option> 
+                      <option value="Porrotta & Curry"></option>
+                      <option value="Appam & Curry"></option>
+                      <option value="Kabsa"></option>
+                      <option value="Kuzhimandi"></option>
+                      <option value="Poori Masala"></option>
+                      <option value="Masala Dosa"></option>
+                    </datalist>
+                </div>
+
+                <div class="form-group">
+                    {{ form1.people.label(class="form-control-label") }}
+                    {% if form1.people.errors %}
+                        {{ form1.people(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form1.people.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form1.people(class="form-control form-control-lg") }}
+                    {% endif %}
+                    <small class="text-muted">(in terms of Maximum No.of People that can be served)</small>
+                </div>
+      
+                    
+            </fieldset>
+            <div class="form-group">
+                {{ form1.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+   </div>
+  </div>
+
+{% else %}
+  <div class="col-md-6">
+   <div class="content-section">
+        <form method="POST" action="">
+            {{ form2.hidden_tag() }}
+            <fieldset class="form-group">
+              
+                <legend class="border-bottom mb-4">Create Post</legend>
+
+                <div class="form-group">
+                    {{ form2.people.label(class="form-control-label") }}
+                    {% if form2.people.errors %}
+                        {{ form2.people(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form2.people.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form2.people(class="form-control form-control-lg") }}
+                    {% endif %}
+                  <small class="text-muted">(in terms of Minimum No.of People that needs to be served)</small>
+                </div>
+                <div class="form-group">
+                    {{ form2.food.label(class="form-control-label") }}
+                    {{ form2.food(list="fooditem") }}
+                    <datalist id="fooditem"> 
+                      <option value="No Specifications" selected>No Specifications</option>   
+                      <option value="Meals"></option>  
+                      <option value="Biriyani"></option>
+                      <option value="Fried Rice"></option> 
+                      <option value="Noodles"></option> 
+                      <option value="Chappathi & Curry"></option> 
+                      <option value="Porrotta & Curry"></option>
+                      <option value="Appam & Curry"></option>
+                      <option value="Kabsa"></option>
+                      <option value="Kuzhimandi"></option>
+                      <option value="Poori Masala"></option>
+                      <option value="Masala Dosa"></option>
+                    </datalist>
+                  <small class="text-muted"><br>(Consumers are adviced to accept any food to meet requirements.)</small>
+                </div>
+      
+                  
+            </fieldset>
+            <div class="form-group">
+                {{ form2.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+   </div>
+  </div>
+{% endif %}
+
+  <div class="col-md-3">
+  </div>
+</div>
+
+{% endblock content %}
+
+

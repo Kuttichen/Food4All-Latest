@@ -1,0 +1,1113 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="row"> 
+  {% if current_user.usertype=="Consumer" %}
+  <div class="col-md-6">
+    <article class="media content-section" style="  background: linear-gradient(to bottom, #B5070E 70%, black 140%); border-width: 5px; border-radius: 10px; ">
+    <h3 style="color: white;align-content: center;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VENDORS</h3>
+    </article>
+  </div>
+  <div class="col-md-6">
+    <article class="media content-section" style="background: linear-gradient(to bottom, white 70%, black 140%);  border-width: 5px;border-radius: 10px;">
+    <h3 style="color:#001931">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CONSUMERS</h3>
+  </article>
+  {%else%}
+  <div class="col-md-6">
+    <article class="media content-section" style="  background: linear-gradient(to bottom, white 70%, black 140%); border-width: 5px; border-radius: 10px; ">
+    <h3 style="color: #001931;align-content: center;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VENDORS</h3>
+    </article>
+  </div>
+  <div class="col-md-6">
+    <article class="media content-section" style="background: linear-gradient(to bottom, #B5070E 70%, black 140%);  border-width: 5px;border-radius: 10px;">
+    <h3 style="color:white">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CONSUMERS</h3>
+  </article>
+  {%endif%}
+  </div>
+</div>
+  
+
+
+<div class="row"> 
+  {% if current_user.usertype=="Vendor" %}
+  <div class="col-md-6">
+      {% for post in posts1.items %}
+        {% if post.id == post_idyo %}
+          <article style="background:#c0deed; border-radius: 1px; " class="media content-section">          
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <b><a href="{{url_for('profile',profile_id=post.author.id)}}"><font size="5" color=#001931 class="mr-2" >{{ post.author.username }}</b></font></a><br>
+              <b><a class="text-muted">{{ post.author.location }}</a></b><br>
+              <small class="text-muted">{{ post.date_posted.strftime('%A,  %d %b %Y') }}</small>&nbsp;&nbsp;&nbsp;&nbsp;
+              <small class="text-muted">{{ post.date_posted.strftime('%I:%M %p') }}</small>
+            </div>
+
+              <div class="row">
+                <div class="col-sm-8">
+                  <b><a class="article-title1" href="{{ url_for('post', post_id=post.id) }}">Available Food :</a></b>
+                </div>
+                <div class="col-sm-4">
+                  <b><a class="article-title1" >Max. People:</a></b>
+                </div>
+              </div>
+
+            <p class="article-content list-group"> 
+                <div class="row">
+                  <div class="col-sm-8">
+                    <li style="border-color: #001931;border-width: .1rem" class="list-group-item list-group-item-light">{{ post.food }}</li>
+                  </div>
+                  <div class="col-sm-4">
+                    <li style="border-color: #001931;border-width: .1rem " class="list-group-item list-group-item-light">{{post.people}}</li>
+                  </div>
+                </div>
+            </p>
+            </div>
+        {%endif%}
+	  {%endfor%}
+  </div>
+
+<!-- Loops for right side, currentuser=vendor -->
+  <div class="col-md-6">
+<!-- Loop1 -->
+    {% for post in posts1.items %}
+      {% if post.author.usertype == "Consumer" %}
+        {% if post.people == post_people %}
+        {% if post.food == post_food %}
+          {% if post.matchrequest==True %}
+          	{% if post.requestpartner==current_user.username %}
+          		<article style="background: linear-gradient(to bottom, #001931 15%, black 100%);"   class="media content-section">
+          	{% else %}
+          		<article style="background:white; " class="media content-section">
+          	{%endif%}
+          {%else%}
+          <article onMouseOver="this.style.backgroundColor='black'" onMouseOut="this.style.backgroundColor='white'" class="media content-section">  
+          {%endif%}         
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <div class="row">
+                <div class="col-sm-8">
+                  <b><a href="{{url_for('profile',profile_id=post.author.id)}}"><font size="5" color=#B5070E class="mr-2" >{{ post.author.username }}</b></font></a><br>
+                  <b><a class="text-muted">{{ post.author.location }}</a></b><br>
+                  <small class="text-muted">{{ post.date_posted.strftime('%A,  %d %b %Y') }}</small>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <small class="text-muted">{{ post.date_posted.strftime('%I:%M %p') }}</small>
+                </div>
+                <div class="col-sm-4">
+                    {% if post.matchrequest==True %}
+       					{% if post.requestpartner==current_user.username %}
+          					<a href="{{ url_for('confirmfindmatch2',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-warning" type="button" >Requested</button></a>  
+       					{% else %}
+       					   <button class="btn btn-secondary" type="button" disabled>Not Available</button>
+      				    {%endif%}
+      				{%else%}
+        				<a href="{{ url_for('confirmfindmatch',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-success" type="button" >Donate Food </button></a>    
+      				{% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                  <b><a class="article-title1" >Min. People :</a></b>
+                </div>
+                <div class="col-sm-8">
+                  <b><a class="article-title1" href="{{ url_for('post', post_id=post.id) }}">Preferred Food :</a></b>
+                </div>
+              </div>
+            <p class="article-content list-group"> 
+                <div class="row">
+                  <div class="col-sm-4">
+                  <li style="border-color:#B5070E;border-width: .1rem;border-radius: 10px " class="list-group-item list-group-item-light">{{post.people}}</li>
+                </div>
+                <div class="col-sm-8">
+                  <li style="border-color:#B5070E;border-width: .1rem;border-radius: 10px " class="list-group-item list-group-item-light">{{ post.food }}</li>
+                </div>
+                </div>
+            </p>
+          </div>
+          </article>
+        {%endif%}
+        {%endif%}
+      {%endif%}
+	{%endfor%}
+<!-- Loop2 -->
+    {% for post in posts1.items %}
+      {% if post.author.usertype == "Consumer" %}
+        {% if post.people == post_people %}
+        {% if post.food != post_food %}
+          {% if post.matchrequest==True %}
+          	{% if post.requestpartner==current_user.username %}
+          		<article style="background: linear-gradient(to bottom, #001931 15%, black 100%);"   class="media content-section">
+          	{% else %}
+          		<article style="background:white; " class="media content-section">
+          	{%endif%}
+          {%else%}
+          <article onMouseOver="this.style.backgroundColor='black'" onMouseOut="this.style.backgroundColor='white'" class="media content-section">  
+          {%endif%}         
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <div class="row">
+                <div class="col-sm-8">
+                  <b><a href="{{url_for('profile',profile_id=post.author.id)}}"><font size="5" color=#B5070E class="mr-2" >{{ post.author.username }}</b></font></a><br>
+                  <b><a class="text-muted">{{ post.author.location }}</a></b><br>
+                  <small class="text-muted">{{ post.date_posted.strftime('%A,  %d %b %Y') }}</small>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <small class="text-muted">{{ post.date_posted.strftime('%I:%M %p') }}</small>
+                </div>
+                <div class="col-sm-4">
+                    {% if post.matchrequest==True %}
+       					{% if post.requestpartner==current_user.username %}
+          					<a href="{{ url_for('confirmfindmatch2',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-warning" type="button" >Requested</button></a>  
+       					{% else %}
+       					   <button class="btn btn-secondary" type="button" disabled>Not Available</button>
+      				    {%endif%}
+      				{%else%}
+        				<a href="{{ url_for('confirmfindmatch',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-success" type="button" >Donate Food </button></a>    
+      				{% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                  <b><a class="article-title1" >Min. People :</a></b>
+                </div>
+                <div class="col-sm-8">
+                  <b><a class="article-title1" href="{{ url_for('post', post_id=post.id) }}">Preferred Food :</a></b>
+                </div>
+              </div>
+            <p class="article-content list-group"> 
+                <div class="row">
+                  <div class="col-sm-4">
+                  <li style="border-color:#B5070E;border-width: .1rem;border-radius: 10px " class="list-group-item list-group-item-light">{{post.people}}</li>
+                </div>
+                <div class="col-sm-8">
+                  <li style="border-color:#B5070E;border-width: .1rem;border-radius: 10px " class="list-group-item list-group-item-light">{{ post.food }}</li>
+                </div>
+                </div>
+            </p>
+          </div>
+          </article>
+        {%endif%}
+        {%endif%}
+      {%endif%}
+	{%endfor%}
+
+  	<!-- Loop3 -->
+    {% for post in posts1.items %}
+      {% if post.author.usertype == "Consumer" %}
+        {% if post.people < post_people %}
+        {% if post_people-5 < post.people %}
+        {% if post.food == post_food %}
+
+          {% if post.matchrequest==True %}
+          	{% if post.requestpartner==current_user.username %}
+          		<article style="background: linear-gradient(to bottom, #001931 15%, black 100%);"   class="media content-section">
+          	{% else %}
+          		<article style="background:white; " class="media content-section">
+          	{%endif%}
+          {%else%}
+          <article onMouseOver="this.style.backgroundColor='black'" onMouseOut="this.style.backgroundColor='white'" class="media content-section">  
+          {%endif%}         
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <div class="row">
+                <div class="col-sm-8">
+                  <b><a href="{{url_for('profile',profile_id=post.author.id)}}"><font size="5" color=#B5070E class="mr-2" >{{ post.author.username }}</b></font></a><br>
+                  <b><a class="text-muted">{{ post.author.location }}</a></b><br>
+                  <small class="text-muted">{{ post.date_posted.strftime('%A,  %d %b %Y') }}</small>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <small class="text-muted">{{ post.date_posted.strftime('%I:%M %p') }}</small>
+                </div>
+                <div class="col-sm-4">
+                    {% if post.matchrequest==True %}
+       					{% if post.requestpartner==current_user.username %}
+          					<a href="{{ url_for('confirmfindmatch2',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-warning" type="button" >Requested</button></a>  
+       					{% else %}
+       					   <button class="btn btn-secondary" type="button" disabled>Not Available</button>
+      				    {%endif%}
+      				{%else%}
+        				<a href="{{ url_for('confirmfindmatch',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-success" type="button" >Donate Food </button></a>    
+      				{% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                  <b><a class="article-title1" >Min. People :</a></b>
+                </div>
+                <div class="col-sm-8">
+                  <b><a class="article-title1" href="{{ url_for('post', post_id=post.id) }}">Preferred Food :</a></b>
+                </div>
+              </div>
+            <p class="article-content list-group"> 
+                <div class="row">
+                  <div class="col-sm-4">
+                  <li style="border-color:#B5070E;border-width: .1rem;border-radius: 10px " class="list-group-item list-group-item-light">{{post.people}}</li>
+                </div>
+                <div class="col-sm-8">
+                  <li style="border-color:#B5070E;border-width: .1rem;border-radius: 10px " class="list-group-item list-group-item-light">{{ post.food }}</li>
+                </div>
+                </div>
+            </p>
+          </div>
+          </article>
+        {%endif%}
+        {%endif%}
+        {%endif%}
+      {%endif%}
+	{%endfor%}
+
+<!-- Loop4  -->
+    {% for post in posts1.items %}
+      {% if post.author.usertype == "Consumer" %}
+        {% if post.people < post_people %}
+        {% if post_people-5 < post.people %}
+        {% if post.food == "No Specifications" %}
+
+          {% if post.matchrequest==True %}
+          	{% if post.requestpartner==current_user.username %}
+          		<article style="background: linear-gradient(to bottom, #001931 15%, black 100%);"   class="media content-section">
+          	{% else %}
+          		<article style="background:white; " class="media content-section">
+          	{%endif%}
+          {%else%}
+          <article onMouseOver="this.style.backgroundColor='black'" onMouseOut="this.style.backgroundColor='white'" class="media content-section">  
+          {%endif%}         
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <div class="row">
+                <div class="col-sm-8">
+                  <b><a href="{{url_for('profile',profile_id=post.author.id)}}"><font size="5" color=#B5070E class="mr-2" >{{ post.author.username }}</b></font></a><br>
+                  <b><a class="text-muted">{{ post.author.location }}</a></b><br>
+                  <small class="text-muted">{{ post.date_posted.strftime('%A,  %d %b %Y') }}</small>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <small class="text-muted">{{ post.date_posted.strftime('%I:%M %p') }}</small>
+                </div>
+                <div class="col-sm-4">
+                    {% if post.matchrequest==True %}
+       					{% if post.requestpartner==current_user.username %}
+          					<a href="{{ url_for('confirmfindmatch2',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-warning" type="button" >Requested</button></a>  
+       					{% else %}
+       					   <button class="btn btn-secondary" type="button" disabled>Not Available</button>
+      				    {%endif%}
+      				{%else%}
+        				<a href="{{ url_for('confirmfindmatch',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-success" type="button" >Donate Food </button></a>    
+      				{% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                  <b><a class="article-title1" >Min. People :</a></b>
+                </div>
+                <div class="col-sm-8">
+                  <b><a class="article-title1" href="{{ url_for('post', post_id=post.id) }}">Preferred Food :</a></b>
+                </div>
+              </div>
+            <p class="article-content list-group"> 
+                <div class="row">
+                  <div class="col-sm-4">
+                  <li style="border-color:#B5070E;border-width: .1rem;border-radius: 10px " class="list-group-item list-group-item-light">{{post.people}}</li>
+                </div>
+                <div class="col-sm-8">
+                  <li style="border-color:#B5070E;border-width: .1rem;border-radius: 10px " class="list-group-item list-group-item-light">{{ post.food }}</li>
+                </div>
+                </div>
+            </p>
+          </div>
+          </article>
+        {%endif%}
+        {%endif%}
+        {%endif%}
+      {%endif%}
+	{%endfor%}
+
+<!-- Loop5  -->
+    {% for post in posts1.items %}
+      {% if post.author.usertype == "Consumer" %}
+        {% if post.people < post_people %}
+        {% if post_people-5 < post.people %}
+        {% if post.food != post_food %}
+        {% if post.food != "No Specifications" %}
+
+          {% if post.matchrequest==True %}
+          	{% if post.requestpartner==current_user.username %}
+          		<article style="background: linear-gradient(to bottom, #001931 15%, black 100%);"   class="media content-section">
+          	{% else %}
+          		<article style="background:white; " class="media content-section">
+          	{%endif%}
+          {%else%}
+          <article onMouseOver="this.style.backgroundColor='black'" onMouseOut="this.style.backgroundColor='white'" class="media content-section">  
+          {%endif%}         
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <div class="row">
+                <div class="col-sm-8">
+                  <b><a href="{{url_for('profile',profile_id=post.author.id)}}"><font size="5" color=#B5070E class="mr-2" >{{ post.author.username }}</b></font></a><br>
+                  <b><a class="text-muted">{{ post.author.location }}</a></b><br>
+                  <small class="text-muted">{{ post.date_posted.strftime('%A,  %d %b %Y') }}</small>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <small class="text-muted">{{ post.date_posted.strftime('%I:%M %p') }}</small>
+                </div>
+                <div class="col-sm-4">
+                    {% if post.matchrequest==True %}
+       					{% if post.requestpartner==current_user.username %}
+          					<a href="{{ url_for('confirmfindmatch2',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-warning" type="button" >Requested</button></a>  
+       					{% else %}
+       					   <button class="btn btn-secondary" type="button" disabled>Not Available</button>
+      				    {%endif%}
+      				{%else%}
+        				<a href="{{ url_for('confirmfindmatch',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-success" type="button" >Donate Food </button></a>   
+      				{% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                  <b><a class="article-title1" >Min. People :</a></b>
+                </div>
+                <div class="col-sm-8">
+                  <b><a class="article-title1" href="{{ url_for('post', post_id=post.id) }}">Preferred Food :</a></b>
+                </div>
+              </div>
+            <p class="article-content list-group"> 
+                <div class="row">
+                  <div class="col-sm-4">
+                  <li style="border-color:#B5070E;border-width: .1rem;border-radius: 10px " class="list-group-item list-group-item-light">{{post.people}}</li>
+                </div>
+                <div class="col-sm-8">
+                  <li style="border-color:#B5070E;border-width: .1rem;border-radius: 10px " class="list-group-item list-group-item-light">{{ post.food }}</li>
+                </div>
+                </div>
+            </p>
+          </div>
+          </article>
+        {%endif%}
+        {%endif%}
+        {%endif%}
+        {%endif%}
+      {%endif%}
+	{%endfor%}   
+  </div>             <!-- End Of Loops for RightSide, when c.u =vendor -->
+
+
+
+
+  {% else %}
+<!-- Start of Loops for LeftSide, when c.u = consumer -->
+  <div class="col-md-6">
+<!-- Loop1  -->
+    {% for post in posts2.items %}
+      {% if post.author.usertype == "Vendor" %}
+        {% if post.people == post_people %}
+        {% if post.food == post_food %}
+          {% if post.matchrequest==True %}
+          	{% if post.requestpartner==current_user.username %}
+          		<article style="background: linear-gradient(to bottom, #001931 15%, black 100%);"   class="media content-section">
+          	{% else %}
+          		<article style="background:white; " class="media content-section">
+          	{%endif%}
+          {%else%}
+          <article onMouseOver="this.style.backgroundColor='black'" onMouseOut="this.style.backgroundColor='white'" class="media content-section">  
+          {%endif%}     
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <div class="row">
+                <div class="col-sm-8">
+                  <b><a href="{{url_for('profile',profile_id=post.author.id)}}"><font size="5" color=#B5070E class="mr-2" >{{ post.author.username }}</b></font></a><br>
+                  <b><a class="text-muted">{{ post.author.location }}</a></b><br>
+                  <small class="text-muted">{{ post.date_posted.strftime('%A,  %d %b %Y') }}</small>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <small class="text-muted">{{ post.date_posted.strftime('%I:%M %p') }}</small>
+                </div>
+                <div class="col-sm-4">
+                    {% if post.matchrequest==True %}
+        				{% if post.requestpartner==current_user.username %}
+         					<a href="{{ url_for('confirmfindmatch2',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-warning" type="button" >Requested</button></a>  
+        				{% else %}
+            				<button class="btn btn-secondary" type="button" disabled>Not Available</button>
+        				{%endif%}
+      				{%else%}
+        				<a href="{{ url_for('confirmfindmatch',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-success" type="button" >Request Food </button></a>    
+      				{% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-8">
+                  <b><a class="article-title1" href="{{ url_for('post', post_id=post.id) }}">Available Food :</a></b>
+                </div>
+                <div class="col-sm-4">
+                  <b><a class="article-title1" >Max. People:</a></b>
+                </div>
+            </div>
+
+            <p class="article-content list-group"> 
+            	<div class="row">
+                  <div class="col-sm-8">
+                    <li style="border-color: #B5070E;border-width: .1rem;border-radius: 10px" class="list-group-item list-group-item-light">{{ post.food }}</li>
+                  </div>
+                  <div class="col-sm-4">
+                    <li style="border-color: #B5070E;border-width: .1rem ;border-radius: 10px" class="list-group-item list-group-item-light">{{post.people}}</li>
+                  </div>
+                </div>
+            </p>
+          </article>
+        {%endif%}
+        {%endif%}
+      {% endif %}
+	{%endfor%}
+
+<!-- Loop2  -->
+    {% for post in posts2.items %}
+      {% if post.author.usertype == "Vendor" %}
+        {% if post.people == post_people %}
+        {% if post.food != post_food %}
+          {% if post.matchrequest==True %}
+          	{% if post.requestpartner==current_user.username %}
+          		<article style="background: linear-gradient(to bottom, #001931 15%, black 100%);"   class="media content-section">
+          	{% else %}
+          		<article style="background:white; " class="media content-section">
+          	{%endif%}
+          {%else%}
+          <article onMouseOver="this.style.backgroundColor='black'" onMouseOut="this.style.backgroundColor='white'" class="media content-section">  
+          {%endif%}     
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <div class="row">
+                <div class="col-sm-8">
+                  <b><a href="{{url_for('profile',profile_id=post.author.id)}}"><font size="5" color=#B5070E class="mr-2" >{{ post.author.username }}</b></font></a><br>
+                  <b><a class="text-muted">{{ post.author.location }}</a></b><br>
+                  <small class="text-muted">{{ post.date_posted.strftime('%A,  %d %b %Y') }}</small>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <small class="text-muted">{{ post.date_posted.strftime('%I:%M %p') }}</small>
+                </div>
+                <div class="col-sm-4">
+                    {% if post.matchrequest==True %}
+        				{% if post.requestpartner==current_user.username %}
+         					<a href="{{ url_for('confirmfindmatch2',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-warning" type="button" >Requested</button></a>  
+        				{% else %}
+            				<button class="btn btn-secondary" type="button" disabled>Not Available</button>
+        				{%endif%}
+      				{%else%}
+        				<a href="{{ url_for('confirmfindmatch',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-success" type="button" >Request Food </button></a>    
+      				{% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-8">
+                  <b><a class="article-title1" href="{{ url_for('post', post_id=post.id) }}">Available Food :</a></b>
+                </div>
+                <div class="col-sm-4">
+                  <b><a class="article-title1" >Max. People:</a></b>
+                </div>
+            </div>
+
+            <p class="article-content list-group"> 
+            	<div class="row">
+                  <div class="col-sm-8">
+                    <li style="border-color: #B5070E;border-width: .1rem;border-radius: 10px" class="list-group-item list-group-item-light">{{ post.food }}</li>
+                  </div>
+                  <div class="col-sm-4">
+                    <li style="border-color: #B5070E;border-width: .1rem ;border-radius: 10px" class="list-group-item list-group-item-light">{{post.people}}</li>
+                  </div>
+                </div>
+            </p>
+          </article>
+        {%endif%}
+        {%endif%}
+      {% endif %}
+	{%endfor%}
+
+<!-- Loop3  -->
+    {% for post in posts2.items %}
+      {% if post.author.usertype == "Vendor" %}
+        {% if post.people > post_people %}
+        {% if post_people+5 > post.people %}
+        {% if post.food == post_food %}
+          {% if post.matchrequest==True %}
+          	{% if post.requestpartner==current_user.username %}
+          		<article style="background: linear-gradient(to bottom, #001931 15%, black 100%);"   class="media content-section">
+          	{% else %}
+          		<article style="background:white; " class="media content-section">
+          	{%endif%}
+          {%else%}
+          <article onMouseOver="this.style.backgroundColor='black'" onMouseOut="this.style.backgroundColor='white'" class="media content-section">  
+          {%endif%}     
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <div class="row">
+                <div class="col-sm-8">
+                  <b><a href="{{url_for('profile',profile_id=post.author.id)}}"><font size="5" color=#B5070E class="mr-2" >{{ post.author.username }}</b></font></a><br>
+                  <b><a class="text-muted">{{ post.author.location }}</a></b><br>
+                  <small class="text-muted">{{ post.date_posted.strftime('%A,  %d %b %Y') }}</small>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <small class="text-muted">{{ post.date_posted.strftime('%I:%M %p') }}</small>
+                </div>
+                <div class="col-sm-4">
+                    {% if post.matchrequest==True %}
+        				{% if post.requestpartner==current_user.username %}
+         					<a href="{{ url_for('confirmfindmatch2',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-warning" type="button" >Requested</button></a>  
+        				{% else %}
+            				<button class="btn btn-secondary" type="button" disabled>Not Available</button>
+        				{%endif%}
+      				{%else%}
+        				<a href="{{ url_for('confirmfindmatch',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-success" type="button" >Request Food </button></a>    
+      				{% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-8">
+                  <b><a class="article-title1" href="{{ url_for('post', post_id=post.id) }}">Available Food :</a></b>
+                </div>
+                <div class="col-sm-4">
+                  <b><a class="article-title1" >Max. People:</a></b>
+                </div>
+            </div>
+
+            <p class="article-content list-group"> 
+            	<div class="row">
+                  <div class="col-sm-8">
+                    <li style="border-color: #B5070E;border-width: .1rem;border-radius: 10px" class="list-group-item list-group-item-light">{{ post.food }}</li>
+                  </div>
+                  <div class="col-sm-4">
+                    <li style="border-color: #B5070E;border-width: .1rem ;border-radius: 10px" class="list-group-item list-group-item-light">{{post.people}}</li>
+                  </div>
+                </div>
+            </p>
+          </article>
+        {%endif%}
+        {%endif%}
+        {%endif%}
+      {% endif %}
+	{%endfor%}
+
+<!-- Loop4  -->
+    {% for post in posts2.items %}
+      {% if post.author.usertype == "Vendor" %}
+        {% if post.people > post_people %}
+        {% if post_people+5 > post.people %}
+        {% if post.food == "No Specifications" %}
+          {% if post.matchrequest==True %}
+          	{% if post.requestpartner==current_user.username %}
+          		<article style="background: linear-gradient(to bottom, #001931 15%, black 100%);"   class="media content-section">
+          	{% else %}
+          		<article style="background:white; " class="media content-section">
+          	{%endif%}
+          {%else%}
+          <article onMouseOver="this.style.backgroundColor='black'" onMouseOut="this.style.backgroundColor='white'" class="media content-section">  
+          {%endif%}     
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <div class="row">
+                <div class="col-sm-8">
+                  <b><a href="{{url_for('profile',profile_id=post.author.id)}}"><font size="5" color=#B5070E class="mr-2" >{{ post.author.username }}</b></font></a><br>
+                  <b><a class="text-muted">{{ post.author.location }}</a></b><br>
+                  <small class="text-muted">{{ post.date_posted.strftime('%A,  %d %b %Y') }}</small>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <small class="text-muted">{{ post.date_posted.strftime('%I:%M %p') }}</small>
+                </div>
+                <div class="col-sm-4">
+                    {% if post.matchrequest==True %}
+        				{% if post.requestpartner==current_user.username %}
+         					<a href="{{ url_for('confirmfindmatch2',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-warning" type="button" >Requested</button></a>  
+        				{% else %}
+            				<button class="btn btn-secondary" type="button" disabled>Not Available</button>
+        				{%endif%}
+      				{%else%}
+        				<a href="{{ url_for('confirmfindmatch',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-success" type="button" >Request Food </button></a>    
+      				{% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-8">
+                  <b><a class="article-title1" href="{{ url_for('post', post_id=post.id) }}">Available Food :</a></b>
+                </div>
+                <div class="col-sm-4">
+                  <b><a class="article-title1" >Max. People:</a></b>
+                </div>
+            </div>
+
+            <p class="article-content list-group"> 
+            	<div class="row">
+                  <div class="col-sm-8">
+                    <li style="border-color: #B5070E;border-width: .1rem;border-radius: 10px" class="list-group-item list-group-item-light">{{ post.food }}</li>
+                  </div>
+                  <div class="col-sm-4">
+                    <li style="border-color: #B5070E;border-width: .1rem ;border-radius: 10px" class="list-group-item list-group-item-light">{{post.people}}</li>
+                  </div>
+                </div>
+            </p>
+          </article>
+        {%endif%}
+        {%endif%}
+        {%endif%}
+      {% endif %}
+	{%endfor%}
+
+<!-- Loop5  -->
+    {% for post in posts2.items %}
+      {% if post.author.usertype == "Vendor" %}
+        {% if post.people > post_people %}
+        {% if post_people+5 > post.people %}
+        {% if post.food != "No Specifications" %}
+        {% if post.food != post_food %}
+          {% if post.matchrequest==True %}
+          	{% if post.requestpartner==current_user.username %}
+          		<article style="background: linear-gradient(to bottom, #001931 15%, black 100%);"   class="media content-section">
+          	{% else %}
+          		<article style="background:white; " class="media content-section">
+          	{%endif%}
+          {%else%}
+          <article onMouseOver="this.style.backgroundColor='black'" onMouseOut="this.style.backgroundColor='white'" class="media content-section">  
+          {%endif%}     
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <div class="row">
+                <div class="col-sm-8">
+                  <b><a href="{{url_for('profile',profile_id=post.author.id)}}"><font size="5" color=#B5070E class="mr-2" >{{ post.author.username }}</b></font></a><br>
+                  <b><a class="text-muted">{{ post.author.location }}</a></b><br>
+                  <small class="text-muted">{{ post.date_posted.strftime('%A,  %d %b %Y') }}</small>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <small class="text-muted">{{ post.date_posted.strftime('%I:%M %p') }}</small>
+                </div>
+                <div class="col-sm-4">
+                    {% if post.matchrequest==True %}
+        				{% if post.requestpartner==current_user.username %}
+         					<a href="{{ url_for('confirmfindmatch2',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-warning" type="button" >Requested</button></a>  
+        				{% else %}
+            				<button class="btn btn-secondary" type="button" disabled>Not Available</button>
+        				{%endif%}
+      				{%else%}
+        				<a href="{{ url_for('confirmfindmatch',post_id=post.id,current_id=current_user.id,findpost_id=post_idyo) }}"><button class="btn btn-success" type="button" >Request Food </button></a>    
+      				{% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-8">
+                  <b><a class="article-title1" href="{{ url_for('post', post_id=post.id) }}">Available Food :</a></b>
+                </div>
+                <div class="col-sm-4">
+                  <b><a class="article-title1" >Max. People:</a></b>
+                </div>
+            </div>
+
+            <p class="article-content list-group"> 
+            	<div class="row">
+                  <div class="col-sm-8">
+                    <li style="border-color: #B5070E;border-width: .1rem;border-radius: 10px" class="list-group-item list-group-item-light">{{ post.food }}</li>
+                  </div>
+                  <div class="col-sm-4">
+                    <li style="border-color: #B5070E;border-width: .1rem ;border-radius: 10px" class="list-group-item list-group-item-light">{{post.people}}</li>
+                  </div>
+                </div>
+            </p>
+          </article>
+        {%endif%}
+        {%endif%}
+        {%endif%}
+        {%endif%}
+      {% endif %}
+	{%endfor%}
+  </div>                   <!--  End of Loops  -->
+
+  <div class="col-md-6">
+      {% for post in posts2.items %}
+        {% if post.id == post_idyo %}
+          <article style="background:#c0deed; border-radius: 1px; " class="media content-section">          
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <b><a href="{{url_for('profile',profile_id=post.author.id)}}"><font size="5" color=#001931 class="mr-2" >{{ post.author.username }}</b></font></a><br>
+              <b><a class="text-muted">{{ post.author.location }}</a></b><br>
+              <small class="text-muted">{{ post.date_posted.strftime('%A,  %d %b %Y') }}</small>&nbsp;&nbsp;&nbsp;&nbsp;
+              <small class="text-muted">{{ post.date_posted.strftime('%I:%M %p') }}</small>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                  <b><a class="article-title1" >Min. People:</a></b> 
+                </div>
+                <div class="col-sm-8">
+                  <b><a class="article-title1" href="{{ url_for('post', post_id=post.id) }}">Preferred Food :</a></b>
+                </div>
+              </div>
+            <p class="article-content list-group"> 
+                <div class="row">
+                  <div class="col-sm-4">
+                    <li style="border-color: #001931;border-width: .1rem" class="list-group-item list-group-item-light">{{post.people}}</li>
+                  </div>
+                  <div class="col-sm-8">
+                    <li style="border-color: #001931;border-width: .1rem " class="list-group-item list-group-item-light">{{ post.food }}</li>
+                  </div>
+                </div>
+            </p>
+            </div>
+        {%endif%}
+	  {%endfor%}
+  {%endif%}
+  </div>
+</div>
+
+
+
+
+
+{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

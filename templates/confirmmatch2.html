@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="row">  
+  <div class="col-md-5"><br>
+  <article class="media content-section">
+    <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+    <div class="media-body">
+      <div class="article-metadata">
+        <a class="mr-2" href="#">{{ post.author.username }}</a>
+        <small class="text-muted">{{ post.date_posted.strftime('%A,  %d %b %Y') }}</small>
+      </div>
+      {% if current_user.usertype=="Vendor" %}
+      <b><a class="article-title" >Required Food :</a></b>
+      {%else%}
+      <b><a class="article-title" >Available Food :</a></b>
+      {%endif%}
+            <p class="article-content list-group"> 
+                <li class="list-group-item list-group-item-light">{{ post.food }}</li>
+            </p>
+    </div>
+  </article>
+  </div>
+  <div class="col-md-7">
+    <div>
+      {% if current_user.usertype=="Vendor" %}
+      <h2 style="color: grey;">Are you sure you wish to Request for Providing Food to <b>{{ post.author.username }}</b> ?</h2></b> 
+      {%else%} 
+      <h2 style="color: grey;">Are you sure you wish to Request for Receiving Food from <b>{{ post.author.username }}</b> ?</h2></b> 
+      {% endif %}    
+    </div>
+    <div>&nbsp;&nbsp;&nbsp;
+      <a href="{{url_for('home2')}}"><button class="btn btn-light" type="button" disabled>Request Sent</button></a>
+      <a href="{{url_for('confirmmatch',post_id=post.id,current_id=current_user.id)}}"><button class="btn btn-danger" type="button">Cancel Request </button></a>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+    
+                
